@@ -1,5 +1,6 @@
 package com.application.ecommerceappmvvm.presentation.screens.auth.login.components
 
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -23,12 +24,14 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.ColorMatrix
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -47,6 +50,16 @@ import com.application.ecommerceappmvvm.ui.theme.Blue700
 fun LoginContent(navController: NavHostController, paddingValues: PaddingValues, vm: LoginViewModel = hiltViewModel()) {
 
     val state = vm.state
+    val context = LocalContext.current
+
+    /**
+     * Entrará al LaunchedEffect cada vez que cambie el estado
+     */
+    LaunchedEffect(key1 = vm.errorMessage) {
+        if (vm.errorMessage != "") {
+            Toast.makeText(context, vm.errorMessage, Toast.LENGTH_LONG).show()
+        }
+    }
 
     /**
      * Aplicamos inyección de dependencia con el parámetro vm: LoginViewModel = hiltViewModel()
@@ -153,8 +166,8 @@ fun LoginContent(navController: NavHostController, paddingValues: PaddingValues,
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(50.dp),
-                        onClick = {},
-                        text = "LOGIN"
+                        text = "LOGIN",
+                        onClick = { vm.validateForm() },
                     )
                     Spacer(modifier = Modifier.height(10.dp))
                     Row(
